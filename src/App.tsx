@@ -1,26 +1,68 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Counter from "./Counter";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+interface AppState {
+  mount: boolean;
+  ignoreProp: number;
+  seed: number;
+}
+
+class App extends React.Component<{}, AppState> {
+  constructor(props: any) {
+    super(props);
+    this.state = {
+      mount: true,
+      ignoreProp: 0,
+      seed: 40,
+    };
+
+    this.mountCounter = this.mountCounter.bind(this);
+    this.unMountCounter = this.unMountCounter.bind(this);
+    this.ignoreProp = this.ignoreProp.bind(this);
+    this.seedGenerator = this.seedGenerator.bind(this);
+  }
+
+  mountCounter = () => {
+    this.setState({ mount: true });
+  };
+
+  unMountCounter = () => {
+    this.setState({ mount: false });
+  };
+
+  ignoreProp = () => {
+    this.setState({ ignoreProp: Math.random() });
+  };
+
+  seedGenerator = () => {
+    this.setState({ seed: Number.parseInt((Math.random() * 100).toString()) });
+  };
+
+  render(): React.ReactNode {
+    return (
+      <div className="App">
+        <div
+          style={{
+            marginTop: "2em",
+            marginBottom: "2em",
+          }}
         >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+          <button onClick={this.mountCounter} disabled={this.state.mount}>
+            Mount Counter
+          </button>
+          <button onClick={this.unMountCounter} disabled={!this.state.mount}>
+            Unmount Counter
+          </button>
+          <button onClick={this.ignoreProp}>Ignore prop</button>
+          <button onClick={this.seedGenerator}>Generate seed</button>
+        </div>
+        {this.state.mount ? (
+          <Counter ignoreProp={this.state.ignoreProp} seed={this.state.seed} />
+        ) : null}
+      </div>
+    );
+  }
 }
 
 export default App;
